@@ -192,10 +192,10 @@ function parseCreateForm() {
   }
 }
 
+// Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_create
 function createRequests(form) {
   const requests = [];
   for (let i = 1; i <= form.count; i++) {
-    // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_create
     const droplet = {
       name: `${form.prefix}${i}`,
       region: form.region,
@@ -242,6 +242,7 @@ function createNextDroplet(requests) {
   }
 }
 
+// Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_create
 function createDroplet(req, requests) {
   const dropletRow = $(`#droplet-${req.row}`);
   const dropletID = dropletRow.find(".droplet-id");
@@ -280,6 +281,7 @@ function waitForDroplet(rowID, dropletID, requests) {
   }, 10000);
 }
 
+// Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_get
 function checkDroplet(rowID, dropletID, requests) {
   const dropletRow = $(`#droplet-${rowID}`);
   const dropletIP = dropletRow.find(".droplet-ip");
@@ -304,6 +306,7 @@ function checkDroplet(rowID, dropletID, requests) {
         dropletIP.text("N/A");
         dropletStatus.text(status);
         createNextDroplet(requests);
+        return;
     }
   }).catch((error) => {
     dropletIP.text("N/A");
