@@ -16,3 +16,7 @@ Navigate to http://localhost:8080
 
 Currently implemented batch operations:
 * Create more than 10 droplets at a time.
+
+## Example
+
+![Screenshot](example.png)
