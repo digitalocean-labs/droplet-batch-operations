@@ -119,93 +119,127 @@ function registerFormSubmitListener() {
     self.find(".form-input-hint").addClass("d-hide");
     self.find(".form-group").removeClass("has-error");
 
-    const errors = [];
-    const region = $("#create-droplets-region").val();
-    if (!!!region) {
-      errors.push("#create-droplets-region");
-    }
-    const size = $("#create-droplets-size").val();
-    if (!!!size) {
-      errors.push("#create-droplets-size");
-    }
-    const image = $("#create-droplets-image").val();
-    if (!!!image) {
-      errors.push("#create-droplets-image");
-    }
-    const prefix = $("#create-droplets-name").val().trim();
-    if (!!!prefix) {
-      errors.push("#create-droplets-name");
-    }
-    const numDroplets = parseInt($("#create-droplets-count").val());
-    if (isNaN(numDroplets) || numDroplets < 1) {
-      errors.push("#create-droplets-count");
-    }
-    const ssh = $("#create-droplets-ssh").val();
-    if (ssh.length === 0) {
-      errors.push("#create-droplets-ssh");
-    }
-    if (errors.length > 0) {
-      errors.forEach((element) => {
+    const form = parseCreateForm();
+    if (form.errors.length > 0) {
+      for (const element of form.errors) {
         $(element).closest(".form-group").addClass("has-error");
         $(element).siblings(".form-input-hint").removeClass("d-hide");
-      });
-      return;
-    }
-
-    const userdata = $("#create-droplets-userdata").val().trim();
-    const monitoring = $("#create-droplets-monitoring").is(":checked");
-    const backups = $("#create-droplets-backups").is(":checked");
-    const ipv6 = $("#create-droplets-ipv6").is(":checked");
-
-    let tags = []
-    const tagsTxt = $("#create-droplets-tags").val();
-    if (!!tagsTxt) {
-      tags = tagsTxt.split(",").map((txt) => txt.trim()).filter((txt) => !!txt)
+      }
+      return false;
     }
 
     self.find("fieldset").prop("disabled", true);
     $("#create-droplets-btn").closest(".form-group").hide();
 
-    const requests = [];
-    for (let i = 1; i <= numDroplets; i++) {
-      // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_create
-      const droplet = {
-        name: `${prefix}${i}`,
-        region: region,
-        size: size,
-        image: image,
-        ssh_keys: ssh,
-      };
-      if (monitoring) {
-        droplet["monitoring"] = true;
-      }
-      if (backups) {
-        droplet["backups"] = true;
-      }
-      if (ipv6) {
-        droplet["ipv6"] = true;
-      }
-      if (tags.length > 0) {
-        droplet["tags"] = tags;
-      }
-      if (!!userdata) {
-        droplet["user_data"] = userdata;
-      }
-      requests.push({ row: i, droplet: droplet });
-    }
+    const requests = createRequests(form);
 
     const tmpl = $("#created-droplets-template").text();
     const table = Mustache.render(tmpl, { requests: requests });
     $("#created-droplets").html(table);
 
-    window.setTimeout(function () {
-      const batchSize = Math.min(requests.length, 10);
-      for (let i = 0; i < batchSize; i++) {
-        const req = requests.shift();
-        createDroplet(req, requests);
-      }
-    });
+    createDroplets(requests);
   });
+}
+
+function parseCreateForm() {
+  const errors = [];
+  const region = $("#create-droplets-region").val();
+  if (!!!region) {
+    errors.push("#create-droplets-region");
+  }
+  const size = $("#create-droplets-size").val();
+  if (!!!size) {
+    errors.push("#create-droplets-size");
+  }
+  const image = $("#create-droplets-image").val();
+  if (!!!image) {
+    errors.push("#create-droplets-image");
+  }
+  const prefix = $("#create-droplets-name").val().trim();
+  if (!!!prefix) {
+    errors.push("#create-droplets-name");
+  }
+  const count = parseInt($("#create-droplets-count").val().trim());
+  if (isNaN(count) || count < 1) {
+    errors.push("#create-droplets-count");
+  }
+  const ssh = $("#create-droplets-ssh").val();
+  if (ssh.length === 0) {
+    errors.push("#create-droplets-ssh");
+  }
+  let tags = []
+  const tagsTxt = $("#create-droplets-tags").val().trim();
+  if (!!tagsTxt) {
+    tags = tagsTxt.split(",").map((txt) => txt.trim()).filter((txt) => !!txt)
+  }
+  const userdata = $("#create-droplets-userdata").val().trim();
+  const monitoring = $("#create-droplets-monitoring").is(":checked");
+  const backups = $("#create-droplets-backups").is(":checked");
+  const ipv6 = $("#create-droplets-ipv6").is(":checked");
+  return {
+    region: region,
+    size: size,
+    image: image,
+    prefix: prefix,
+    count: count,
+    ssh: ssh,
+    tags: tags,
+    userdata: userdata,
+    monitoring: monitoring,
+    backups: backups,
+    ipv6: ipv6,
+    errors: errors,
+  }
+}
+
+function createRequests(form) {
+  const requests = [];
+  for (let i = 1; i <= form.count; i++) {
+    // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_create
+    const droplet = {
+      name: `${form.prefix}${i}`,
+      region: form.region,
+      size: form.size,
+      image: form.image,
+      ssh_keys: form.ssh,
+    };
+    if (form.monitoring) {
+      droplet["monitoring"] = true;
+    }
+    if (form.backups) {
+      droplet["backups"] = true;
+    }
+    if (form.ipv6) {
+      droplet["ipv6"] = true;
+    }
+    if (form.tags.length > 0) {
+      droplet["tags"] = form.tags;
+    }
+    if (!!form.userdata) {
+      droplet["user_data"] = form.userdata;
+    }
+    requests.push({ row: i, droplet: droplet });
+  }
+  return requests;
+}
+
+function createDroplets(requests) {
+  window.setTimeout(function () {
+    const batchSize = Math.min(requests.length, 10);
+    for (let i = 0; i < batchSize; i++) {
+      const req = requests.shift();
+      createDroplet(req, requests);
+    }
+  });
+}
+
+function createNextDroplet(requests) {
+  if (requests.length > 0) {
+    const req = requests.shift();
+    window.setTimeout(function () {
+      createDroplet(req, requests);
+    });
+  }
 }
 
 function createDroplet(req, requests) {
@@ -238,15 +272,6 @@ function createDroplet(req, requests) {
     console.error(`droplet-${req.row}`, error);
     createNextDroplet(requests);
   });
-}
-
-function createNextDroplet(requests) {
-  if (requests.length > 0) {
-    const req = requests.shift();
-    window.setTimeout(function () {
-      createDroplet(req, requests);
-    });
-  }
 }
 
 function waitForDroplet(rowID, dropletID, requests) {
