@@ -155,20 +155,14 @@
     </tr>
     </thead>
     <tbody>
-    {{#droplets}}
-    <tr id="droplet-{{index}}">
-      <td class="droplet-name">{{name}}</td>
-      <td class="droplet-id">
-        <div class="loading"></div>
-      </td>
-      <td class="droplet-status">
-        <div class="loading"></div>
-      </td>
-      <td class="droplet-ip">
-        <div class="loading"></div>
-      </td>
+    {{#requests}}
+    <tr id="droplet-{{row}}">
+      <td class="droplet-name">{{droplet.name}}</td>
+      <td class="droplet-id"><div class="loading"></div></td>
+      <td class="droplet-status"><div class="loading"></div></td>
+      <td class="droplet-ip"><div class="loading"></div></td>
     </tr>
-    {{/droplets}}
+    {{/requests}}
     </tbody>
   </table>
 </script>

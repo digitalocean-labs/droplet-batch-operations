@@ -190,24 +190,25 @@ function registerFormSubmitListener() {
       if (!!userdata) {
         request["user_data"] = userdata;
       }
-      requests.push(request);
+      requests.push({ row: i, droplet: request });
     }
 
-    const droplets = requests.map((req, index) => {
-      return { name: req["name"], index: index };
-    });
     const tmpl = $("#created-droplets-template").text();
-    const table = Mustache.render(tmpl, { droplets: droplets });
+    const table = Mustache.render(tmpl, { requests: requests });
     $("#created-droplets").html(table);
 
     window.setTimeout(function () {
-      createDroplet(requests, 0);
+      const batchSize = Math.min(requests.length, 10);
+      for (let i = 0; i < batchSize; i++) {
+        const req = requests.shift();
+        createDroplet(req, requests);
+      }
     });
   });
 }
 
-function createDroplet(requests, index) {
-  const dropletRow = $(`#droplet-${index}`);
+function createDroplet(req, requests) {
+  const dropletRow = $(`#droplet-${req.row}`);
   const dropletID = dropletRow.find(".droplet-id");
   const dropletIP = dropletRow.find(".droplet-ip");
   const dropletStatus = dropletRow.find(".droplet-status");
@@ -216,7 +217,7 @@ function createDroplet(requests, index) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(requests[index]),
+    body: JSON.stringify(req.droplet),
   };
   fetch("/v2/droplets", opts).then((res) => {
     if (res.ok) {
@@ -228,40 +229,41 @@ function createDroplet(requests, index) {
   }).then((data) => {
     dropletID.text(data["droplet"]["id"]);
     dropletStatus.text(data["droplet"]["status"]);
-    waitForDroplet(data["droplet"]["id"], requests, index);
+    waitForDroplet(req.row, data["droplet"]["id"], requests);
   }).catch((error) => {
     dropletID.text("N/A");
     dropletIP.text("N/A");
     dropletStatus.text(error.toString());
-    console.error(`droplet-${index}`, error);
-    createNextDroplet(requests, index);
+    console.error(req.droplet.name, error);
+    createNextDroplet(requests);
   });
 }
 
-function createNextDroplet(requests, index) {
-  const nextIndex = index + 1;
-  if (nextIndex < requests.length) {
+function createNextDroplet(requests) {
+  if (requests.length > 0) {
+    const req = requests.shift();
     window.setTimeout(function () {
-      createDroplet(requests, nextIndex);
+      createDroplet(req, requests);
     });
   }
 }
 
-function waitForDroplet(dropletID, requests, index) {
+function waitForDroplet(rowID, dropletID, requests) {
   window.setTimeout(function () {
-    checkDroplet(dropletID, requests, index);
+    checkDroplet(rowID, dropletID, requests);
   }, 10000);
 }
 
-function checkDroplet(dropletID, requests, index) {
-  const dropletRow = $(`#droplet-${index}`);
+function checkDroplet(rowID, dropletID, requests) {
+  const dropletRow = $(`#droplet-${rowID}`);
   const dropletIP = dropletRow.find(".droplet-ip");
   const dropletStatus = dropletRow.find(".droplet-status");
+  const dropletName = dropletRow.find(".droplet-name").val();
   fetchJson(`/v2/droplets/${dropletID}`).then((data) => {
     const status = data["droplet"]["status"];
     switch (status) {
       case "new":
-        waitForDroplet(dropletID, requests, index);
+        waitForDroplet(rowID, dropletID, requests);
         return;
       case "active":
         dropletIP.text("N/A");
@@ -271,18 +273,18 @@ function checkDroplet(dropletID, requests, index) {
             dropletIP.text(network["ip_address"]);
           }
         });
-        createNextDroplet(requests, index);
+        createNextDroplet(requests);
         return;
       default:
         dropletIP.text("N/A");
         dropletStatus.text(status);
-        createNextDroplet(requests, index);
+        createNextDroplet(requests);
     }
   }).catch((error) => {
     dropletIP.text("N/A");
     dropletStatus.text(error.toString());
-    console.error(`droplet-${index}`, error);
-    createNextDroplet(requests, index);
+    console.error(dropletName, error);
+    createNextDroplet(requests);
   });
 }
 
