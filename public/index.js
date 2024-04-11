@@ -235,7 +235,7 @@ function createDroplet(req, requests) {
     dropletID.text("N/A");
     dropletIP.text("N/A");
     dropletStatus.text(error.toString());
-    console.error(req.droplet.name, error);
+    console.error(`droplet-${req.row}`, error);
     createNextDroplet(requests);
   });
 }
@@ -259,7 +259,6 @@ function checkDroplet(rowID, dropletID, requests) {
   const dropletRow = $(`#droplet-${rowID}`);
   const dropletIP = dropletRow.find(".droplet-ip");
   const dropletStatus = dropletRow.find(".droplet-status");
-  const dropletName = dropletRow.find(".droplet-name").val();
   fetchJson(`/v2/droplets/${dropletID}`).then((data) => {
     const status = data["droplet"]["status"];
     switch (status) {
@@ -284,7 +283,7 @@ function checkDroplet(rowID, dropletID, requests) {
   }).catch((error) => {
     dropletIP.text("N/A");
     dropletStatus.text(error.toString());
-    console.error(dropletName, error);
+    console.error(`droplet-${rowID}`, error);
     createNextDroplet(requests);
   });
 }
