@@ -11,14 +11,15 @@ function fetchJson(url) {
 
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#section/Introduction/Links-and-Pagination
 function fetchPages(url, value, accumulator) {
+  const publicApi = "https://api.digitalocean.com";
   return fetchJson(url).then((data) => {
     accumulator = accumulator.concat(data[value]);
     if ("links" in data) {
       if ("pages" in data["links"]) {
         if ("next" in data["links"]["pages"]) {
           let next = data["links"]["pages"]["next"];
-          if (next.startsWith("https://api.digitalocean.com")) {
-            next = next.replace("https://api.digitalocean.com", "");
+          if (next.startsWith(publicApi)) {
+            next = next.slice(publicApi.length);
             return fetchPages(next, value, accumulator);
           }
         }
