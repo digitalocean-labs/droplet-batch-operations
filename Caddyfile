@@ -2,7 +2,7 @@
 	auto_https off
 }
 
-:8080 {
+http://localhost:8080 {
 	log {
 		output stderr
 	}
