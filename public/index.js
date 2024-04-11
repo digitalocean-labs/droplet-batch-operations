@@ -168,7 +168,7 @@ function registerFormSubmitListener() {
     const requests = [];
     for (let i = 1; i <= numDroplets; i++) {
       // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_create
-      const request = {
+      const droplet = {
         name: `${prefix}${i}`,
         region: region,
         size: size,
@@ -176,21 +176,21 @@ function registerFormSubmitListener() {
         ssh_keys: ssh,
       };
       if (monitoring) {
-        request["monitoring"] = true;
+        droplet["monitoring"] = true;
       }
       if (backups) {
-        request["backups"] = true;
+        droplet["backups"] = true;
       }
       if (ipv6) {
-        request["ipv6"] = true;
+        droplet["ipv6"] = true;
       }
       if (tags.length > 0) {
-        request["tags"] = tags;
+        droplet["tags"] = tags;
       }
       if (!!userdata) {
-        request["user_data"] = userdata;
+        droplet["user_data"] = userdata;
       }
-      requests.push({ row: i, droplet: request });
+      requests.push({ row: i, droplet: droplet });
     }
 
     const tmpl = $("#created-droplets-template").text();
