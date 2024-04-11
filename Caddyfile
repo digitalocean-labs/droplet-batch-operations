@@ -1,0 +1,25 @@
+{
+	auto_https off
+}
+
+:8080 {
+	log {
+		output stderr
+	}
+	handle /v2/* {
+		reverse_proxy https://api.digitalocean.com {
+			header_up Host {upstream_hostport}
+			header_up Authorization "Bearer {$DIGITALOCEAN_TOKEN}"
+			header_up -Referer
+			header_down -Strict-Transport-Security
+			header_down -Content-Security-Policy
+			header_down -Public-Key-Pins-Report-Only
+			header_down -Report-To
+		}
+	}
+	handle {
+		root * public
+		header Cache-Control "no-cache"
+		file_server
+	}
+}
