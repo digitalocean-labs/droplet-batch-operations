@@ -18,10 +18,10 @@ Currently implemented batch operations:
 
 ## Examples
 
-### Droplets create
+### Create multiple droplets
 
 ![Create droplets form and results](examples/create.png)
 
-### Droplets' metrics
+### Monitor multiple droplets
 
 ![Created droplet metrics](examples/metrics.png)
