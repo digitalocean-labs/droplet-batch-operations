@@ -16,10 +16,12 @@ Currently implemented batch operations:
 * Create more than 10 droplets at a time: http://localhost:3000/create.html
 * Show metrics for [tagged droplets](https://www.digitalocean.com/blog/droplet-tagging-organize-your-infrastructure): http://localhost:3000/metrics.html?tag=TAG_NAME
 
-## Example droplet create
+## Examples
+
+### Droplet create
 
 ![Create droplets form and results](examples/create.png)
 
-## Example droplet metrics
+### Droplet metrics
 
 ![Created droplet metrics](examples/metrics.png)
