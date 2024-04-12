@@ -5,7 +5,7 @@
 
 Use DigitalOcean's [Public API](https://docs.digitalocean.com/reference/api/api-reference/) to automate operations that are limited by the [Cloud UI](https://cloud.digitalocean.com).
 
-Start the local [Caddy](https://caddyserver.com/docs/) http server:
+Start a local [Caddy](https://caddyserver.com/docs/) http server:
 
 ```bash
 export DIGITALOCEAN_TOKEN='[REDACTED]'
