@@ -163,7 +163,7 @@ function parseCreateForm() {
   if (ssh.length === 0) {
     errors.push("#create-droplets-ssh");
   }
-  let tags = []
+  let tags = [];
   const tagsTxt = $("#create-droplets-tags").val().trim();
   if (!!tagsTxt) {
     tags = tagsTxt.split(",").map((txt) => txt.trim()).filter((txt) => !!txt)
