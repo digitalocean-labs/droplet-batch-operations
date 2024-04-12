@@ -312,23 +312,9 @@ function checkDroplet(rowID, dropletID, requests) {
         waitForDroplet(rowID, dropletID, requests);
         return;
       case "active":
-        dropletIPv4.text("N/A");
-        dropletIPv6.text("N/A");
+        dropletIPv4.text(getPublicAddress(data, "v4"));
+        dropletIPv6.text(getPublicAddress(data, "v6"));
         dropletStatus.text(status);
-        if ("v4" in data["droplet"]["networks"]) {
-          for (const network of data["droplet"]["networks"]["v4"]) {
-            if (network["type"] === "public") {
-              dropletIPv4.text(network["ip_address"]);
-            }
-          }
-        }
-        if ("v6" in data["droplet"]["networks"]) {
-          for (const network of data["droplet"]["networks"]["v6"]) {
-            if (network["type"] === "public") {
-              dropletIPv6.text(network["ip_address"]);
-            }
-          }
-        }
         createNextDroplet(requests);
         return;
       default:
@@ -345,6 +331,17 @@ function checkDroplet(rowID, dropletID, requests) {
     console.error(`droplet-${rowID}`, error);
     createNextDroplet(requests);
   });
+}
+
+function getPublicAddress(data, ipFamily) {
+  if (ipFamily in data["droplet"]["networks"]) {
+    for (const network of data["droplet"]["networks"][ipFamily]) {
+      if (network["type"] === "public") {
+        return network["ip_address"];
+      }
+    }
+  }
+  return "N/A";
 }
 
 Promise.all([
