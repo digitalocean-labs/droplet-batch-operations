@@ -296,7 +296,7 @@ function createDroplet(req, requests) {
 function waitForDroplet(rowID, dropletID, requests) {
   window.setTimeout(function () {
     checkDroplet(rowID, dropletID, requests);
-  }, 10000);
+  }, 15000);
 }
 
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_get
