@@ -8,14 +8,14 @@
   <link rel="stylesheet" href="/spectre.min.css">
   <script src="/jquery.min.js"></script>
   <script src="/mustache.min.js"></script>
-  <script src="/index.js" defer></script>
+  <script src="/create.js" defer></script>
 </head>
 <body>
 <div class="container grid-lg">
-  <header>
-    <h1>Create Droplets</h1>
-  </header>
   <section id="create-droplets">
+    <header>
+      <h1>Create Droplets</h1>
+    </header>
     <form id="create-droplets-form" class="form-horizontal">
       <fieldset disabled>
         <div class="form-group">
@@ -145,6 +145,13 @@
   <section id="created-droplets" style="margin-bottom: 2em"></section>
 </div>
 <script id="created-droplets-template" type="text/template">
+  {{#has_tags}}
+  <ul>
+    {{#tags}}
+    <li><a href="{{href}}" target="_blank">Metrics for {{name}} droplets</a></li>
+    {{/tags}}
+  </ul>
+  {{/has_tags}}
   <table class="table">
     <thead>
     <tr>

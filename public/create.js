@@ -132,11 +132,7 @@ function registerFormSubmitListener() {
     $("#create-droplets-btn").closest(".form-group").hide();
 
     const requests = createRequests(form);
-
-    const tmpl = $("#created-droplets-template").text();
-    const table = Mustache.render(tmpl, { requests: requests });
-    $("#created-droplets").html(table);
-
+    renderCreatedDroplets(form, requests);
     createDroplets(requests);
   });
 }
@@ -221,6 +217,26 @@ function createRequests(form) {
     requests.push({ row: i, droplet: droplet });
   }
   return requests;
+}
+
+function renderCreatedDroplets(form, requests) {
+  const tags = form.tags.map((tag) => {
+    const params = new URLSearchParams();
+    params.set("tag", tag);
+    params.set("refresh", "1");
+    return {
+      name: tag,
+      href: `/metrics.html?${params}`,
+    };
+  });
+  const data = {
+    tags: tags,
+    has_tags: tags.length > 0,
+    requests: requests,
+  };
+  const tmpl = $("#created-droplets-template").text();
+  const content = Mustache.render(tmpl, data);
+  $("#created-droplets").html(content);
 }
 
 function createDroplets(requests) {

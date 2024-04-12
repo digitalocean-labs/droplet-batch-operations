@@ -2,10 +2,11 @@
 	auto_https off
 }
 
-http://localhost:8080 {
+http://localhost:3000 {
 	log {
 		output stderr
 	}
+	redir / /create.html 302
 	handle /v2/* {
 		reverse_proxy https://api.digitalocean.com {
 			header_up Host {upstream_hostport}
