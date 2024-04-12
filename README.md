@@ -13,8 +13,8 @@ export DIGITALOCEAN_TOKEN='[REDACTED]'
 ```
 
 Currently implemented batch operations:
-* Create more than 10 droplets at a time: http://localhost:3000/create.html
-* Show metrics for [tagged droplets](https://www.digitalocean.com/blog/droplet-tagging-organize-your-infrastructure): http://localhost:3000/metrics.html?tag=TAG_NAME
+* Create more than 10 droplets at a time with http://localhost:3000/create.html
+* Show metrics for [tagged droplets](https://www.digitalocean.com/blog/droplet-tagging-organize-your-infrastructure) with http://localhost:3000/metrics.html?tag=TAG_NAME
 
 ## Examples
 
