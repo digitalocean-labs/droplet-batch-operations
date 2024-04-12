@@ -168,6 +168,9 @@ function parseCreateForm() {
   if (!!tagsTxt) {
     tags = tagsTxt.split(",").map((txt) => txt.trim()).filter((txt) => !!txt)
   }
+  if (tags.length === 0) {
+    errors.push("#create-droplets-tags");
+  }
   const userdata = $("#create-droplets-userdata").val().trim();
   const monitoring = $("#create-droplets-monitoring").is(":checked");
   const backups = $("#create-droplets-backups").is(":checked");
@@ -198,6 +201,7 @@ function createRequests(form) {
       size: form.size,
       image: form.image,
       ssh_keys: form.ssh,
+      tags: form.tags,
     };
     if (form.monitoring) {
       droplet["monitoring"] = true;
@@ -207,9 +211,6 @@ function createRequests(form) {
     }
     if (form.ipv6) {
       droplet["ipv6"] = true;
-    }
-    if (form.tags.length > 0) {
-      droplet["tags"] = form.tags;
     }
     if (!!form.userdata) {
       droplet["user_data"] = form.userdata;
@@ -231,7 +232,6 @@ function renderCreatedDroplets(form, requests) {
   });
   const data = {
     tags: tags,
-    has_tags: tags.length > 0,
     requests: requests,
   };
   const tmpl = $("#created-droplets-template").text();
