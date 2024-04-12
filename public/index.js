@@ -246,7 +246,8 @@ function createNextDroplet(requests) {
 function createDroplet(req, requests) {
   const dropletRow = $(`#droplet-${req.row}`);
   const dropletID = dropletRow.find(".droplet-id");
-  const dropletIP = dropletRow.find(".droplet-ip");
+  const dropletIPv4 = dropletRow.find(".droplet-ipv4");
+  const dropletIPv6 = dropletRow.find(".droplet-ipv6");
   const dropletStatus = dropletRow.find(".droplet-status");
   const opts = {
     method: "POST",
@@ -268,7 +269,8 @@ function createDroplet(req, requests) {
     waitForDroplet(req.row, data["droplet"]["id"], requests);
   }).catch((error) => {
     dropletID.text("N/A");
-    dropletIP.text("N/A");
+    dropletIPv4.text("N/A");
+    dropletIPv6.text("N/A");
     dropletStatus.text(error.toString());
     console.error(`droplet-${req.row}`, error);
     createNextDroplet(requests);
@@ -284,7 +286,8 @@ function waitForDroplet(rowID, dropletID, requests) {
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_get
 function checkDroplet(rowID, dropletID, requests) {
   const dropletRow = $(`#droplet-${rowID}`);
-  const dropletIP = dropletRow.find(".droplet-ip");
+  const dropletIPv4 = dropletRow.find(".droplet-ipv4");
+  const dropletIPv6 = dropletRow.find(".droplet-ipv6");
   const dropletStatus = dropletRow.find(".droplet-status");
   fetchJson(`/v2/droplets/${dropletID}`).then((data) => {
     const status = data["droplet"]["status"];
@@ -293,23 +296,35 @@ function checkDroplet(rowID, dropletID, requests) {
         waitForDroplet(rowID, dropletID, requests);
         return;
       case "active":
-        dropletIP.text("N/A");
+        dropletIPv4.text("N/A");
+        dropletIPv6.text("N/A");
         dropletStatus.text(status);
-        data["droplet"]["networks"]["v4"].forEach((network) => {
-          if (network["type"] === "public") {
-            dropletIP.text(network["ip_address"]);
+        if ("v4" in data["droplet"]["networks"]) {
+          for (const network of data["droplet"]["networks"]["v4"]) {
+            if (network["type"] === "public") {
+              dropletIPv4.text(network["ip_address"]);
+            }
           }
-        });
+        }
+        if ("v6" in data["droplet"]["networks"]) {
+          for (const network of data["droplet"]["networks"]["v6"]) {
+            if (network["type"] === "public") {
+              dropletIPv6.text(network["ip_address"]);
+            }
+          }
+        }
         createNextDroplet(requests);
         return;
       default:
-        dropletIP.text("N/A");
+        dropletIPv4.text("N/A");
+        dropletIPv6.text("N/A");
         dropletStatus.text(status);
         createNextDroplet(requests);
         return;
     }
   }).catch((error) => {
-    dropletIP.text("N/A");
+    dropletIPv4.text("N/A");
+    dropletIPv6.text("N/A");
     dropletStatus.text(error.toString());
     console.error(`droplet-${rowID}`, error);
     createNextDroplet(requests);
