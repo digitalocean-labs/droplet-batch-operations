@@ -36,38 +36,11 @@ function reportError(elementID, error) {
   document.getElementById(elementID).innerText = error.toString();
 }
 
-// Ref: https://docs.digitalocean.com/reference/api/api-reference/#section/Introduction/Links-and-Pagination
-function fetchPages(url, value, accumulator) {
-  return fetch(url)
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      throw new Error(`${res.status} ${res.statusText}\n${res.url}`);
-    })
-    .then((data) => {
-      accumulator = accumulator.concat(data[value]);
-      const publicApi = "https://api.digitalocean.com";
-      if ("links" in data) {
-        if ("pages" in data["links"]) {
-          if ("next" in data["links"]["pages"]) {
-            let next = data["links"]["pages"]["next"];
-            if (next.startsWith(publicApi)) {
-              next = next.slice(publicApi.length);
-              return fetchPages(next, value, accumulator);
-            }
-          }
-        }
-      }
-      return accumulator;
-    });
-}
-
-function fetchDroplets(tag) {
+function searchDroplets(tag) {
   const query = new URLSearchParams();
   query.set("tag_name", tag);
   const url = `/v2/droplets?${query}`;
-  return fetchPages(url, "droplets", []);
+  return getPages(url, "droplets", []);
 }
 
 function newSearchUnixTime(hours) {
@@ -81,12 +54,12 @@ function newSearchUnixTime(hours) {
 const searchEnd = newSearchUnixTime(0); // now
 const searchStart = newSearchUnixTime(1); // 1 hour ago
 
-function fetchJson(searchType, searchArg) {
+function searchMetrics(searchType, dropletID) {
   let searchUrl = "";
   const query = new URLSearchParams();
   switch (searchType) {
     case "bandwidth-inbound":
-      query.set("host_id", searchArg.toString());
+      query.set("host_id", dropletID.toString());
       query.set("interface", "public");
       query.set("direction", "inbound");
       query.set("start", searchStart);
@@ -94,7 +67,7 @@ function fetchJson(searchType, searchArg) {
       searchUrl = "/v2/monitoring/metrics/droplet/bandwidth";
       break;
     case "bandwidth-outbound":
-      query.set("host_id", searchArg.toString());
+      query.set("host_id", dropletID.toString());
       query.set("interface", "public");
       query.set("direction", "outbound");
       query.set("start", searchStart);
@@ -102,19 +75,19 @@ function fetchJson(searchType, searchArg) {
       searchUrl = "/v2/monitoring/metrics/droplet/bandwidth";
       break;
     case "cpu-usage":
-      query.set("host_id", searchArg.toString());
+      query.set("host_id", dropletID.toString());
       query.set("start", searchStart);
       query.set("end", searchEnd);
       searchUrl = "/v2/monitoring/metrics/droplet/cpu";
       break;
     case "memory-free":
-      query.set("host_id", searchArg.toString());
+      query.set("host_id", dropletID.toString());
       query.set("start", searchStart);
       query.set("end", searchEnd);
       searchUrl = "/v2/monitoring/metrics/droplet/memory_free";
       break;
     case "memory-total":
-      query.set("host_id", searchArg.toString());
+      query.set("host_id", dropletID.toString());
       query.set("start", searchStart);
       query.set("end", searchEnd);
       searchUrl = "/v2/monitoring/metrics/droplet/memory_total";
@@ -122,12 +95,7 @@ function fetchJson(searchType, searchArg) {
     default:
       return Promise.reject(new Error(`Unknown search type: "${searchType}"`));
   }
-  return fetch(`${searchUrl}?${query}`).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    throw new Error(`${res.status} ${res.statusText}\n${res.url}`);
-  });
+  return getJson(`${searchUrl}?${query}`);
 }
 
 function noResults(data) {
@@ -157,7 +125,7 @@ function bandwidthSeries(dropletName, data) {
 
 function inboundMetrics(droplets) {
   const dropletMetrics = droplets.map((droplet) => {
-    return fetchJson("bandwidth-inbound", droplet["id"]).then((data) => {
+    return searchMetrics("bandwidth-inbound", droplet["id"]).then((data) => {
       return bandwidthSeries(droplet["name"], data);
     });
   });
@@ -172,7 +140,7 @@ function inboundMetrics(droplets) {
 
 function outboundMetrics(droplets) {
   const dropletMetrics = droplets.map((droplet) => {
-    return fetchJson("bandwidth-outbound", droplet["id"]).then((data) => {
+    return searchMetrics("bandwidth-outbound", droplet["id"]).then((data) => {
       return bandwidthSeries(droplet["name"], data);
     });
   });
@@ -227,7 +195,7 @@ function usedCpuSeries(dropletName, data) {
 
 function cpuUsageMetrics(droplets) {
   const dropletMetrics = droplets.map((droplet) => {
-    return fetchJson("cpu-usage", droplet["id"]).then((data) => {
+    return searchMetrics("cpu-usage", droplet["id"]).then((data) => {
       return usedCpuSeries(droplet["name"], data);
     });
   });
@@ -265,8 +233,8 @@ function usedMemorySeries(dropletName, freeData, totalData) {
 
 function memoryUsageMetrics(droplets) {
   const dropletMetrics = droplets.map((droplet) => {
-    const freeReq = fetchJson("memory-free", droplet["id"]);
-    const totalReq = fetchJson("memory-total", droplet["id"]);
+    const freeReq = searchMetrics("memory-free", droplet["id"]);
+    const totalReq = searchMetrics("memory-total", droplet["id"]);
     return Promise.all([freeReq, totalReq]).then((data) => {
       return usedMemorySeries(droplet["name"], data[0], data[1]);
     });
@@ -290,7 +258,7 @@ if (!!pageQuery) {
   refreshMinutes = !!refreshTxt ? parseInt(refreshTxt) : 0;
 }
 if (!!tagName) {
-  fetchDroplets(tagName)
+  searchDroplets(tagName)
     .then((droplets) => {
       inboundMetrics(droplets);
       outboundMetrics(droplets);
