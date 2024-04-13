@@ -241,9 +241,12 @@ function renderCreatedDroplets(form, requests) {
 
 function createDroplets(requests) {
   window.setTimeout(function () {
+    const batch = [];
     const batchSize = Math.min(requests.length, 10);
     for (let i = 0; i < batchSize; i++) {
-      const req = requests.shift();
+      batch.push(requests.shift());
+    }
+    for (const req of batch) {
       createDroplet(req, requests);
     }
   });
