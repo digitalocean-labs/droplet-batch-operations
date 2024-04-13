@@ -33,11 +33,13 @@ function fetchPages(url, value, accumulator) {
 function fetchRegions() {
   const tmpl = '<option value="{{slug}}">{{name}} ({{slug}})</option>';
   return fetchPages("/v2/regions", "regions", []).then((regions) => {
-    const options = regions.toSorted((a, b) => {
-      return a["name"].localeCompare(b["name"]);
-    }).map((region) => {
-      return Mustache.render(tmpl, region);
-    });
+    const options = regions
+      .toSorted((a, b) => {
+        return a["name"].localeCompare(b["name"]);
+      })
+      .map((region) => {
+        return Mustache.render(tmpl, region);
+      });
     options.unshift('<option value="">Select Datacenter ...</option>');
     $("#create-droplets-region").html(options.join("\n"));
     return regions;
@@ -48,17 +50,19 @@ function fetchRegions() {
 function fetchSizes() {
   const tmpl = '<option value="{{slug}}" class="size {{regions}}">{{name}} ({{slug}}) ${{price}} per month</option>';
   return fetchPages("/v2/sizes", "sizes", []).then((sizes) => {
-    const options = sizes.toSorted((a, b) => {
-      return a["description"].localeCompare(b["description"]);
-    }).map((size) => {
-      const data = {
-        slug: size["slug"],
-        name: size["description"],
-        regions: size["regions"].join(" "),
-        price: size["price_monthly"],
-      };
-      return Mustache.render(tmpl, data);
-    });
+    const options = sizes
+      .toSorted((a, b) => {
+        return a["description"].localeCompare(b["description"]);
+      })
+      .map((size) => {
+        const data = {
+          slug: size["slug"],
+          name: size["description"],
+          regions: size["regions"].join(" "),
+          price: size["price_monthly"],
+        };
+        return Mustache.render(tmpl, data);
+      });
     options.unshift('<option value="">Select Size ...</option>');
     $("#create-droplets-size").html(options.join("\n"));
     return sizes;
@@ -69,17 +73,19 @@ function fetchSizes() {
 function fetchImages() {
   const tmpl = '<option value="{{slug}}" class="image {{regions}}">{{distro}} ({{name}})</option>';
   return fetchPages("/v2/images?type=distribution", "images", []).then((images) => {
-    const options = images.toSorted((a, b) => {
-      return a["distribution"].localeCompare(b["distribution"]);
-    }).map((image) => {
-      const data = {
-        slug: image["slug"],
-        name: image["name"],
-        distro: image["distribution"],
-        regions: image["regions"].join(" "),
-      };
-      return Mustache.render(tmpl, data);
-    });
+    const options = images
+      .toSorted((a, b) => {
+        return a["distribution"].localeCompare(b["distribution"]);
+      })
+      .map((image) => {
+        const data = {
+          slug: image["slug"],
+          name: image["name"],
+          distro: image["distribution"],
+          regions: image["regions"].join(" "),
+        };
+        return Mustache.render(tmpl, data);
+      });
     options.unshift('<option value="">Select Image ...</option>');
     $("#create-droplets-image").html(options.join("\n"));
     return images;
@@ -90,11 +96,13 @@ function fetchImages() {
 function fetchSshKeys() {
   const tmpl = '<option value="{{fingerprint}}">{{name}}</option>';
   return fetchPages("/v2/account/keys", "ssh_keys", []).then((keys) => {
-    const options = keys.toSorted((a, b) => {
-      return a["name"].localeCompare(b["name"]);
-    }).map((key) => {
-      return Mustache.render(tmpl, key);
-    });
+    const options = keys
+      .toSorted((a, b) => {
+        return a["name"].localeCompare(b["name"]);
+      })
+      .map((key) => {
+        return Mustache.render(tmpl, key);
+      });
     $("#create-droplets-ssh").html(options.join("\n"));
     return keys;
   });
@@ -166,7 +174,10 @@ function parseCreateForm() {
   let tags = [];
   const tagsTxt = $("#create-droplets-tags").val().trim();
   if (!!tagsTxt) {
-    tags = tagsTxt.split(",").map((txt) => txt.trim()).filter((txt) => !!txt)
+    tags = tagsTxt
+      .split(",")
+      .map((txt) => txt.trim())
+      .filter((txt) => !!txt);
   }
   if (tags.length === 0) {
     errors.push("#create-droplets-tags");
@@ -271,29 +282,30 @@ function createDroplet(req, requests) {
   const opts = {
     method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(req.droplet),
   };
-  fetch("/v2/droplets", opts).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    throw new Error(
-      `${res.status} ${res.statusText}\n${res.url}`
-    );
-  }).then((data) => {
-    dropletID.text(data["droplet"]["id"]);
-    dropletStatus.text(data["droplet"]["status"]);
-    waitForDroplet(req.row, data["droplet"]["id"], requests);
-  }).catch((error) => {
-    dropletID.text("N/A");
-    dropletIPv4.text("N/A");
-    dropletIPv6.text("N/A");
-    dropletStatus.text(error.toString());
-    console.error(`droplet-${req.row}`, error);
-    createNextDroplet(requests);
-  });
+  fetch("/v2/droplets", opts)
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      throw new Error(`${res.status} ${res.statusText}\n${res.url}`);
+    })
+    .then((data) => {
+      dropletID.text(data["droplet"]["id"]);
+      dropletStatus.text(data["droplet"]["status"]);
+      waitForDroplet(req.row, data["droplet"]["id"], requests);
+    })
+    .catch((error) => {
+      dropletID.text("N/A");
+      dropletIPv4.text("N/A");
+      dropletIPv6.text("N/A");
+      dropletStatus.text(error.toString());
+      console.error(`droplet-${req.row}`, error);
+      createNextDroplet(requests);
+    });
 }
 
 function waitForDroplet(rowID, dropletID, requests) {
@@ -308,32 +320,34 @@ function checkDroplet(rowID, dropletID, requests) {
   const dropletIPv4 = dropletRow.find(".droplet-ipv4");
   const dropletIPv6 = dropletRow.find(".droplet-ipv6");
   const dropletStatus = dropletRow.find(".droplet-status");
-  fetchJson(`/v2/droplets/${dropletID}`).then((data) => {
-    const status = data["droplet"]["status"];
-    switch (status) {
-      case "new":
-        waitForDroplet(rowID, dropletID, requests);
-        return;
-      case "active":
-        dropletIPv4.text(getPublicAddress(data, "v4"));
-        dropletIPv6.text(getPublicAddress(data, "v6"));
-        dropletStatus.text(status);
-        createNextDroplet(requests);
-        return;
-      default:
-        dropletIPv4.text("N/A");
-        dropletIPv6.text("N/A");
-        dropletStatus.text(status);
-        createNextDroplet(requests);
-        return;
-    }
-  }).catch((error) => {
-    dropletIPv4.text("N/A");
-    dropletIPv6.text("N/A");
-    dropletStatus.text(error.toString());
-    console.error(`droplet-${rowID}`, error);
-    createNextDroplet(requests);
-  });
+  fetchJson(`/v2/droplets/${dropletID}`)
+    .then((data) => {
+      const status = data["droplet"]["status"];
+      switch (status) {
+        case "new":
+          waitForDroplet(rowID, dropletID, requests);
+          return;
+        case "active":
+          dropletIPv4.text(getPublicAddress(data, "v4"));
+          dropletIPv6.text(getPublicAddress(data, "v6"));
+          dropletStatus.text(status);
+          createNextDroplet(requests);
+          return;
+        default:
+          dropletIPv4.text("N/A");
+          dropletIPv6.text("N/A");
+          dropletStatus.text(status);
+          createNextDroplet(requests);
+          return;
+      }
+    })
+    .catch((error) => {
+      dropletIPv4.text("N/A");
+      dropletIPv6.text("N/A");
+      dropletStatus.text(error.toString());
+      console.error(`droplet-${rowID}`, error);
+      createNextDroplet(requests);
+    });
 }
 
 function getPublicAddress(data, ipFamily) {
@@ -347,15 +361,12 @@ function getPublicAddress(data, ipFamily) {
   return "N/A";
 }
 
-Promise.all([
-  fetchRegions(),
-  fetchSizes(),
-  fetchImages(),
-  fetchSshKeys(),
-]).then((_) => {
-  registerRegionChangeListener();
-  registerFormSubmitListener();
-}).catch((error) => {
-  console.error(error);
-  $("#create-droplets").text(error.toString());
-});
+Promise.all([fetchRegions(), fetchSizes(), fetchImages(), fetchSshKeys()])
+  .then((_) => {
+    registerRegionChangeListener();
+    registerFormSubmitListener();
+  })
+  .catch((error) => {
+    console.error(error);
+    $("#create-droplets").text(error.toString());
+  });
