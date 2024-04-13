@@ -188,7 +188,7 @@ function parseCreateForm() {
     backups: backups,
     ipv6: ipv6,
     errors: errors,
-  }
+  };
 }
 
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_create
