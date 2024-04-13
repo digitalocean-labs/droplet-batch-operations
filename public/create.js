@@ -82,8 +82,10 @@ function fetchSshKeys() {
 function registerRegionChangeListener() {
   $("#create-droplets-region").on("change", function () {
     const region = $(this).val();
+    $("#create-droplets-size").val("");
     $("#create-droplets-size .size").addClass("d-hide").prop("disabled", true);
     $(`#create-droplets-size .${region}`).removeClass("d-hide").prop("disabled", false);
+    $("#create-droplets-image").val("");
     $("#create-droplets-image .image").addClass("d-hide").prop("disabled", true);
     $(`#create-droplets-image .${region}`).removeClass("d-hide").prop("disabled", false);
   });
