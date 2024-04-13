@@ -101,7 +101,12 @@ function fetchJson(searchType, searchArg) {
 }
 
 function noResults(data) {
-  return data["data"]["result"].length === 0;
+  if ("data" in data) {
+    if ("result" in data["data"]) {
+      return data["data"]["result"].length === 0;
+    }
+  }
+  return true;
 }
 
 function bandwidthSeries(dropletName, data) {
@@ -177,7 +182,7 @@ function usedCpuSeries(dropletName, data) {
     for (const metric of metrics.values()) {
       totalCpu = totalCpu + metric;
     }
-    const usedCpu = (totalCpu - idleCpu) / totalCpu * 100.0;
+    const usedCpu = ((totalCpu - idleCpu) / totalCpu) * 100.0;
     series.push([tick, usedCpu]);
   }
   return {
@@ -213,7 +218,7 @@ function usedMemorySeries(dropletName, freeData, totalData) {
     const tick = freeValues[i][0] * 1000;
     const freeMem = parseFloat(freeValues[i][1]);
     const totalMem = parseFloat(totalValues[i][1]);
-    const usedMem = (totalMem - freeMem) / totalMem * 100.0;
+    const usedMem = ((totalMem - freeMem) / totalMem) * 100.0;
     series.push([tick, usedMem]);
   }
   return {
