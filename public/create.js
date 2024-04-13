@@ -5,7 +5,7 @@ function fetchJson(url) {
     if (res.ok) {
       return res.json();
     }
-    throw new Error(`${res.status} ${res.statusText}\n${res.url}`);
+    throw new Error(`${res.status} ${res.statusText} at ${res.url}`);
   });
 }
 
@@ -291,7 +291,7 @@ function createDroplet(req, requests) {
       if (res.ok) {
         return res.json();
       }
-      throw new Error(`${res.status} ${res.statusText}\n${res.url}`);
+      throw new Error(`${res.status} ${res.statusText} at ${res.url}`);
     })
     .then((data) => {
       dropletID.text(data["droplet"]["id"]);
