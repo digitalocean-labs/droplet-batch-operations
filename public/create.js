@@ -247,22 +247,15 @@ function createNextDroplet(requests) {
 
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_create
 function createDroplet(req, requests) {
-  const dropletRow = $(`#droplet-${req.row}`);
-  const dropletID = dropletRow.find(".droplet-id");
-  const dropletIPv4 = dropletRow.find(".droplet-ipv4");
-  const dropletIPv6 = dropletRow.find(".droplet-ipv6");
-  const dropletStatus = dropletRow.find(".droplet-status");
   postJson("/v2/droplets", req.droplet)
     .then((data) => {
-      dropletID.text(data["droplet"]["id"]);
-      dropletStatus.text(data["droplet"]["status"]);
-      waitForDroplet(req.row, data["droplet"]["id"], requests);
+      const dropletID = data["droplet"]["id"];
+      const status = data["droplet"]["status"];
+      updateDropletRow(req.row, { id: dropletID, status: status });
+      waitForDroplet(req.row, dropletID, requests);
     })
     .catch((error) => {
-      dropletID.text("N/A");
-      dropletIPv4.text("N/A");
-      dropletIPv6.text("N/A");
-      dropletStatus.text(error.toString());
+      updateDropletRow(req.row, { id: "N/A", ipv4: "N/A", ipv6: "N/A", status: error.toString() });
       console.error(`droplet-${req.row}`, error);
       createNextDroplet(requests);
     });
@@ -276,10 +269,6 @@ function waitForDroplet(rowID, dropletID, requests) {
 
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/droplets_get
 function checkDroplet(rowID, dropletID, requests) {
-  const dropletRow = $(`#droplet-${rowID}`);
-  const dropletIPv4 = dropletRow.find(".droplet-ipv4");
-  const dropletIPv6 = dropletRow.find(".droplet-ipv6");
-  const dropletStatus = dropletRow.find(".droplet-status");
   getJson(`/v2/droplets/${dropletID}`)
     .then((data) => {
       const status = data["droplet"]["status"];
@@ -288,26 +277,40 @@ function checkDroplet(rowID, dropletID, requests) {
           waitForDroplet(rowID, dropletID, requests);
           return;
         case "active":
-          dropletIPv4.text(getPublicAddress(data, "v4"));
-          dropletIPv6.text(getPublicAddress(data, "v6"));
-          dropletStatus.text(status);
+          updateDropletRow(rowID, {
+            ipv4: getPublicAddress(data, "v4"),
+            ipv6: getPublicAddress(data, "v6"),
+            status: status,
+          });
           createNextDroplet(requests);
           return;
         default:
-          dropletIPv4.text("N/A");
-          dropletIPv6.text("N/A");
-          dropletStatus.text(status);
+          updateDropletRow(rowID, { ipv4: "N/A", ipv6: "N/A", status: status });
           createNextDroplet(requests);
           return;
       }
     })
     .catch((error) => {
-      dropletIPv4.text("N/A");
-      dropletIPv6.text("N/A");
-      dropletStatus.text(error.toString());
+      updateDropletRow(rowID, { ipv4: "N/A", ipv6: "N/A", status: error.toString() });
       console.error(`droplet-${rowID}`, error);
       createNextDroplet(requests);
     });
+}
+
+function updateDropletRow(rowID, data) {
+  const row = $(`#droplet-${rowID}`);
+  if ("id" in data) {
+    row.find(".droplet-id").text(data["id"]);
+  }
+  if ("ipv4" in data) {
+    row.find(".droplet-ipv4").text(data["ipv4"]);
+  }
+  if ("ipv6" in data) {
+    row.find(".droplet-ipv6").text(data["ipv6"]);
+  }
+  if ("status" in data) {
+    row.find(".droplet-status").text(data["status"]);
+  }
 }
 
 function getPublicAddress(data, ipFamily) {
