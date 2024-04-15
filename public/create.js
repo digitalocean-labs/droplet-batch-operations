@@ -277,11 +277,9 @@ function checkDroplet(rowID, dropletID, requests) {
           waitForDroplet(rowID, dropletID, requests);
           return;
         case "active":
-          updateDropletRow(rowID, {
-            ipv4: getPublicAddress(data, "v4"),
-            ipv6: getPublicAddress(data, "v6"),
-            status: status,
-          });
+          const ipv4 = getPublicAddress(data, "v4");
+          const ipv6 = getPublicAddress(data, "v6");
+          updateDropletRow(rowID, { ipv4: ipv4, ipv6: ipv6, status: status });
           createNextDroplet(requests);
           return;
         default:
