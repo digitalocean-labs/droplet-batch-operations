@@ -3,6 +3,10 @@
   display: none;
 }
 
+#setup select {
+  width: 100px;
+}
+
 #container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
