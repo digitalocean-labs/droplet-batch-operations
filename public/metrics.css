@@ -3,11 +3,13 @@
   text-align: center;
 }
 
-#setup.hidden, #setup label {
+#setup.hidden,
+#setup label {
   display: none;
 }
 
-#setup input, #setup select {
+#setup input,
+#setup select {
   font-size: 1.1em;
   margin: 0;
   padding: 5px;
