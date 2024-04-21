@@ -248,6 +248,10 @@ function memoryUsageMetrics(droplets) {
     });
 }
 
+function unhideElement(elementID) {
+  document.getElementById(elementID).classList.remove("hidden");
+}
+
 let tagName = null;
 let refreshMinutes = 0;
 const pageQuery = window.location.search;
@@ -258,6 +262,7 @@ if (!!pageQuery) {
   refreshMinutes = !!refreshTxt ? parseInt(refreshTxt) : 0;
 }
 if (!!tagName) {
+  unhideElement("container");
   searchDroplets(tagName)
     .then((droplets) => {
       inboundMetrics(droplets);
@@ -275,6 +280,5 @@ if (!!tagName) {
     }, reloadMillis);
   }
 } else {
-  const error = new Error("Missing 'tag' parameter");
-  reportError("container", error);
+  unhideElement("setup");
 }
