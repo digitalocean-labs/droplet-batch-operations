@@ -13,14 +13,14 @@
 <body>
 <div id="setup" class="hidden">
   <h1>Droplet Metrics</h1>
-  <form method="get">
+  <form name="setup" method="get">
     <p>
-      <label for="tag-input">Droplet Tag Name</label>
-      <input id="tag-input" name="tag" type="text" placeholder="Droplet Tag Name" maxlength="50" required autofocus>
+      <label for="setup-tag">Droplet Tag Name</label>
+      <input id="setup-tag" name="tag" type="text" placeholder="Droplet Tag Name" maxlength="50" required autofocus>
     </p>
     <p>
-      <label for="refresh-select">Refresh Interval</label>
-      <select id="refresh-select" name="refresh">
+      <label for="setup-refresh">Refresh Interval</label>
+      <select id="setup-refresh" name="refresh">
         <option value="0">Don't refresh metrics</option>
         <option value="1">Refresh every 1 minute</option>
         <option value="2">Refresh every 2 minutes</option>
@@ -29,7 +29,7 @@
         <option value="5">Refresh every 5 minutes</option>
       </select>
     </p>
-    <p class="buttons">
+    <p>
       <input type="submit" value="Show Metrics">
     </p>
   </form>
