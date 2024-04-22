@@ -20,7 +20,7 @@ function fetchRegions() {
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/sizes_list
 function fetchSizes() {
   const tmpl = '<option value="{{slug}}" class="size {{regions}}">{{name}} ({{slug}}) ${{price}} per month</option>';
-  return getPages("/v2/sizes", "sizes", []).then((sizes) => {
+  return getPages("/v2/sizes?per_page=200", "sizes", []).then((sizes) => {
     const options = sizes
       .toSorted((a, b) => {
         return a["description"].localeCompare(b["description"]);
