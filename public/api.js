@@ -27,6 +27,7 @@ function postJson(url, body) {
 
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#section/Introduction/Links-and-Pagination
 function getPages(url, value, accumulator) {
+  accumulator = typeof accumulator === "undefined" ? [] : accumulator;
   const publicApi = "https://api.digitalocean.com";
   return getJson(url).then((data) => {
     accumulator = accumulator.concat(data[value]);

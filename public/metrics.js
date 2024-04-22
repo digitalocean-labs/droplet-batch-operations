@@ -40,7 +40,7 @@ function searchDroplets(tag) {
   const query = new URLSearchParams();
   query.set("tag_name", tag);
   const url = `/v2/droplets?${query}`;
-  return getPages(url, "droplets", []);
+  return getPages(url, "droplets");
 }
 
 function newSearchUnixTime(hours) {

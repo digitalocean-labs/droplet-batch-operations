@@ -3,7 +3,7 @@
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/regions_list
 function fetchRegions() {
   const tmpl = '<option value="{{slug}}">{{name}} ({{slug}})</option>';
-  return getPages("/v2/regions", "regions", []).then((regions) => {
+  return getPages("/v2/regions", "regions").then((regions) => {
     const options = regions
       .toSorted((a, b) => {
         return a["name"].localeCompare(b["name"]);
@@ -20,7 +20,7 @@ function fetchRegions() {
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/sizes_list
 function fetchSizes() {
   const tmpl = '<option value="{{slug}}" class="size {{regions}}">{{name}} ({{slug}}) ${{price}} per month</option>';
-  return getPages("/v2/sizes?per_page=200", "sizes", []).then((sizes) => {
+  return getPages("/v2/sizes?per_page=200", "sizes").then((sizes) => {
     const options = sizes
       .toSorted((a, b) => {
         return a["description"].localeCompare(b["description"]);
@@ -43,7 +43,7 @@ function fetchSizes() {
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/images_list
 function fetchImages() {
   const tmpl = '<option value="{{slug}}" class="image {{regions}}">{{distro}} ({{name}})</option>';
-  return getPages("/v2/images?type=distribution", "images", []).then((images) => {
+  return getPages("/v2/images?type=distribution", "images").then((images) => {
     const options = images
       .toSorted((a, b) => {
         return a["distribution"].localeCompare(b["distribution"]);
@@ -66,7 +66,7 @@ function fetchImages() {
 // Ref: https://docs.digitalocean.com/reference/api/api-reference/#operation/sshKeys_list
 function fetchSshKeys() {
   const tmpl = '<option value="{{fingerprint}}">{{name}}</option>';
-  return getPages("/v2/account/keys", "ssh_keys", []).then((keys) => {
+  return getPages("/v2/account/keys", "ssh_keys").then((keys) => {
     const options = keys
       .toSorted((a, b) => {
         return a["name"].localeCompare(b["name"]);
