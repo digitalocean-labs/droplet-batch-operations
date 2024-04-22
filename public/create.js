@@ -93,6 +93,7 @@ function registerRegionChangeListener() {
 
 function registerFormSubmitListener() {
   $("#create-droplets-form fieldset").prop("disabled", false);
+  $("#create-droplets-region").trigger("focus");
   $("#create-droplets-form").on("submit", function (event) {
     event.preventDefault();
 

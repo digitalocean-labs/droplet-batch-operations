@@ -281,4 +281,5 @@ if (!!tagName) {
   }
 } else {
   unhideElement("setup");
+  document.getElementById("setup-tag").focus();
 }
