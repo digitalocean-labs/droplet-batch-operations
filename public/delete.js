@@ -12,6 +12,7 @@ $("#delete-form").on("submit", function (e) {
 
   $(this).find("fieldset").prop("disabled", true);
   const resultDiv = $("#delete-result");
+
   fetch(url, opts)
     .then((res) => {
       if (res.ok) {
