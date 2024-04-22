@@ -14,7 +14,8 @@ export DIGITALOCEAN_TOKEN='[REDACTED]'
 
 Currently implemented batch operations:
 * Create more than 10 droplets at the same time with http://localhost:3000/create.html
-* Show metrics for [tagged droplets](https://www.digitalocean.com/blog/droplet-tagging-organize-your-infrastructure) with http://localhost:3000/metrics.html
+* Show metrics for all [tagged droplets](https://www.digitalocean.com/blog/droplet-tagging-organize-your-infrastructure) with http://localhost:3000/metrics.html
+* Delete all [tagged droplets](https://www.digitalocean.com/blog/droplet-tagging-organize-your-infrastructure) with http://localhost:3000/delete.html
 
 ## Examples
 

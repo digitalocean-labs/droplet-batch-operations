@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delete Droplets</title>
+  <link rel="stylesheet" href="/vendor/spectre.min.css">
+  <script src="/vendor/jquery.min.js"></script>
+  <script src="/delete.js" defer></script>
+</head>
+<body>
+<div class="container grid-sm">
+  <h1 class="text-center">Delete Droplets</h1>
+  <form id="delete-form" name="delete">
+    <fieldset>
+      <div class="input-group">
+        <label for="delete-tag" class="input-group-addon">Droplet Tag Name</label>
+        <input id="delete-tag" type="text" class="form-input"
+               placeholder="(Required)" maxlength="50"
+               required autofocus>
+        <button class="btn btn-primary input-group-btn">Delete Droplets</button>
+      </div>
+    </fieldset>
+  </form>
+  <div id="delete-result" class="toast d-hide"></div>
+</div>
+</body>
+</html>
