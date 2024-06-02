@@ -6,9 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Create Droplets</title>
   <link rel="stylesheet" href="/vendor/spectre-do.min.css">
+  <link rel="stylesheet" href="/vendor/chosen.min.css">
+  <link rel="stylesheet" href="/create.css">
   <link rel="stylesheet" href="/nav.css">
   <script src="/vendor/jquery.min.js"></script>
   <script src="/vendor/mustache.min.js"></script>
+  <script src="/vendor/chosen.jquery.min.js"></script>
   <script src="/api.js"></script>
   <script src="/create.js" defer></script>
 </head>
@@ -83,7 +86,7 @@
             <label class="form-label" for="create-droplets-ssh">SSH Keys</label>
           </div>
           <div class="col-10">
-            <select id="create-droplets-ssh" class="form-select" multiple>
+            <select id="create-droplets-ssh" class="form-select" multiple data-placeholder="Select at least one SSH Key">
               <option value="">Loading ...</option>
             </select>
             <p class="form-input-hint d-hide">
