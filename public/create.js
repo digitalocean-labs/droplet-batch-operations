@@ -93,12 +93,12 @@ function registerRegionChangeListener() {
 
 function registerFormSubmitListener() {
   $("#create-droplets-form fieldset").prop("disabled", false);
-  $('select.form-select').chosen({
+  $("select.form-select").chosen({
     disable_search_threshold: 10,
     search_contains: true,
-    width: '100%',
+    width: "100%",
   });
-  $('label.initial-focus').trigger('click');
+  $("label.initial-focus").trigger("click");
   $("#create-droplets-form").on("submit", function (event) {
     event.preventDefault();
 
