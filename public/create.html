@@ -5,13 +5,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Create Droplets</title>
-  <link rel="stylesheet" href="/vendor/spectre-do.min.css">
-  <link rel="stylesheet" href="/vendor/chosen.min.css">
-  <link rel="stylesheet" href="/create.css">
+  <link rel="stylesheet" href="/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/vendor/component-chosen.min.css">
   <link rel="stylesheet" href="/nav.css">
   <script src="/vendor/jquery.min.js"></script>
   <script src="/vendor/mustache.min.js"></script>
   <script src="/vendor/chosen.jquery.min.js"></script>
+  <script src="/vendor/bootstrap.bundle.min.js"></script>
   <script src="/public-api.js"></script>
   <script src="/create.js" defer></script>
 </head>
@@ -23,144 +23,125 @@
     <li><a href="/delete.html">Delete</a></li>
   </ul>
 </nav>
-<div class="container grid-lg">
+<div class="container">
   <section id="create-droplets">
-    <header>
-      <h1>Create Droplets</h1>
-    </header>
-    <form id="create-droplets-form" class="form-horizontal">
+    <h1 class="my-3">Create Droplets</h1>
+    <form id="create-droplets-form">
       <fieldset disabled>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label for="create-droplets-region" class="form-label initial-focus py-0">Datacenter</label>
+            <label class="col-form-label initial-focus" for="create-droplets-region">Datacenter</label>
           </div>
           <div class="col-10">
-            <select id="create-droplets-region" class="form-select">
+            <select id="create-droplets-region" class="form-control chosen-select">
               <option value="">Loading ...</option>
             </select>
-            <p class="form-input-hint d-hide">Please select a Datacenter.</p>
+            <div class="invalid-feedback">Please select a Datacenter.</div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label for="create-droplets-size" class="form-label py-0">Droplet Size</label>
+            <label class="col-form-label" for="create-droplets-size">Droplet Size</label>
           </div>
           <div class="col-10">
-            <select id="create-droplets-size" class="form-select">
+            <select id="create-droplets-size" class="form-control chosen-select">
               <option value="">Loading ...</option>
             </select>
-            <p class="form-input-hint d-hide">Please select a Droplet Size.</p>
+            <div class="invalid-feedback">Please select a Droplet Size.</div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label for="create-droplets-image" class="form-label py-0">Droplet Image</label>
+            <label class="col-form-label" for="create-droplets-image">Droplet Image</label>
           </div>
           <div class="col-10">
-            <select id="create-droplets-image" class="form-select">
+            <select id="create-droplets-image" class="form-control chosen-select">
               <option value="">Loading ...</option>
             </select>
-            <p class="form-input-hint d-hide">Please select a Droplet Image.</p>
+            <div class="invalid-feedback">Please select a Droplet Image.</div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label class="form-label" for="create-droplets-name">Droplet Name Prefix</label>
+            <label class="col-form-label" for="create-droplets-name">Droplet Name Prefix</label>
           </div>
           <div class="col-10">
-            <input id="create-droplets-name" class="form-input" type="text" placeholder="Prefix (Required)">
-            <p class="form-input-hint d-hide">Please provide a droplet name prefix.</p>
+            <input id="create-droplets-name" class="form-control" type="text" placeholder="Prefix (Required)">
+            <div class="invalid-feedback">Please provide a droplet name prefix.</div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label class="form-label" for="create-droplets-count">Number of Droplets</label>
+            <label class="col-form-label" for="create-droplets-count">Number of Droplets</label>
           </div>
           <div class="col-10">
-            <input id="create-droplets-count" class="form-input" type="text" placeholder="Number (Required)">
-            <p class="form-input-hint d-hide">Please provide the number of droplets that you wish to create.</p>
+            <input id="create-droplets-count" class="form-control" type="text" placeholder="Number (Required)">
+            <div class="invalid-feedback">Please provide the number of droplets that you wish to create.</div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label for="create-droplets-ssh" class="form-label py-0">SSH Keys</label>
+            <label class="col-form-label" for="create-droplets-ssh">SSH Keys</label>
           </div>
           <div class="col-10">
-            <select id="create-droplets-ssh" class="form-select" multiple data-placeholder="Select at least one SSH Key">
+            <select id="create-droplets-ssh" class="form-control chosen-select" multiple data-placeholder="Select at least one SSH Key">
               <option value="">Loading ...</option>
             </select>
-            <p class="form-input-hint d-hide">
+            <div class="invalid-feedback">
               Please select at least one SSH key, or you will not be able to access your droplets.
-            </p>
+            </div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label class="form-label" for="create-droplets-tags">Droplet Tags</label>
+            <label class="col-form-label" for="create-droplets-tags">Droplet Tags</label>
           </div>
           <div class="col-10">
-            <input id="create-droplets-tags" class="form-input" type="text"
-                   placeholder="Comma-separated tags (Required)">
-            <p class="form-input-hint d-hide">
+            <input id="create-droplets-tags" class="form-control" type="text" placeholder="Comma-separated tags (Required)">
+            <div class="invalid-feedback">
               Please provide at least one tag, or you will not be able to monitor your droplets here.
-            </p>
+            </div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label class="form-label" for="create-droplets-monitoring">Monitoring</label>
+            <span class="col-form-label">Droplet Options</span>
           </div>
           <div class="col-10">
-            <label for="create-droplets-monitoring" class="form-switch">
-              <input id="create-droplets-monitoring" type="checkbox" checked>
-              <i class="form-icon"></i>
-            </label>
+            <div class="custom-control custom-switch custom-control-inline">
+              <input class="custom-control-input" id="create-droplets-monitoring" type="checkbox" checked>
+              <label class="custom-control-label" for="create-droplets-monitoring">Monitoring</label>
+            </div>
+            <div class="custom-control custom-switch custom-control-inline">
+              <input class="custom-control-input" id="create-droplets-backups" type="checkbox">
+              <label class="custom-control-label" for="create-droplets-backups">Backups</label>
+            </div>
+            <div class="custom-control custom-switch custom-control-inline">
+              <input class="custom-control-input" id="create-droplets-ipv6" type="checkbox">
+              <label class="custom-control-label" for="create-droplets-ipv6">IPv6</label>
+            </div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
           <div class="col-2">
-            <label class="form-label" for="create-droplets-backups">Backups</label>
+            <label class="col-form-label" for="create-droplets-userdata">User Data</label>
           </div>
           <div class="col-10">
-            <label for="create-droplets-backups" class="form-switch">
-              <input id="create-droplets-backups" type="checkbox">
-              <i class="form-icon"></i>
-            </label>
+            <textarea id="create-droplets-userdata" class="form-control" placeholder="User Data (Optional)" rows="3"></textarea>
           </div>
         </div>
-        <div class="form-group">
-          <div class="col-2">
-            <label class="form-label" for="create-droplets-ipv6">IPv6</label>
-          </div>
-          <div class="col-10">
-            <label for="create-droplets-ipv6" class="form-switch">
-              <input id="create-droplets-ipv6" type="checkbox">
-              <i class="form-icon"></i>
-            </label>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-2">
-            <label class="form-label" for="create-droplets-userdata">User Data</label>
-          </div>
-          <div class="col-10">
-            <textarea id="create-droplets-userdata" class="form-input"
-                      placeholder="User Data (Optional)" rows="3"></textarea>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-2">&nbsp;</div>
-          <div class="col-10 text-right">
+        <div class="row form-group">
+          <div class="col-12 text-right">
             <button id="create-droplets-btn" class="btn btn-primary">Create Droplets</button>
           </div>
         </div>
       </fieldset>
     </form>
   </section>
-  <section id="created-droplets" style="margin-bottom: 2em"></section>
+  <section id="created-droplets" style="margin-bottom: 3em"></section>
 </div>
 <script id="created-droplets-template" type="text/template">
-  <ul>
+  <ul class="list-unstyled mb-3">
     {{#tags}}
     <li><a href="{{href}}" target="_blank">Metrics for "{{name}}" droplets</a></li>
     {{/tags}}
@@ -179,10 +160,26 @@
     {{#requests}}
     <tr id="droplet-{{row}}">
       <td class="droplet-name">{{droplet.name}}</td>
-      <td class="droplet-id"><div class="loading"></div></td>
-      <td class="droplet-status"><div class="loading"></div></td>
-      <td class="droplet-ipv4"><div class="loading"></div></td>
-      <td class="droplet-ipv6"><div class="loading"></div></td>
+      <td class="droplet-id">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="sr-only">Loading ...</span>
+        </div>
+      </td>
+      <td class="droplet-status">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="sr-only">Loading ...</span>
+        </div>
+      </td>
+      <td class="droplet-ipv4">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="sr-only">Loading ...</span>
+        </div>
+      </td>
+      <td class="droplet-ipv6">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="sr-only">Loading ...</span>
+        </div>
+      </td>
     </tr>
     {{/requests}}
     </tbody>

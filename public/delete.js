@@ -16,12 +16,12 @@ $("#delete-form").on("submit", function (e) {
   fetch(url, opts)
     .then((res) => {
       if (res.ok) {
-        resultDiv.text("Delete request successful.").addClass("toast-success").removeClass("d-hide");
+        resultDiv.text("Delete request successful.").addClass("alert-success").removeClass("d-none");
       } else {
         throw new Error(`${res.status} ${res.statusText} at ${res.url}`);
       }
     })
     .catch((error) => {
-      resultDiv.text(error.toString()).addClass("toast-error").removeClass("d-hide");
+      resultDiv.text(error.toString()).addClass("alert-danger").removeClass("d-none");
     });
 });

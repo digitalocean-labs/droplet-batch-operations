@@ -82,18 +82,18 @@ function fetchSshKeys() {
 function registerRegionChangeListener() {
   $("#create-droplets-region").on("change", function () {
     const region = $(this).val();
-    $("#create-droplets-size .size").addClass("d-hide").prop("disabled", true);
-    $(`#create-droplets-size .${region}`).removeClass("d-hide").prop("disabled", false);
+    $("#create-droplets-size .size").addClass("d-none").prop("disabled", true);
+    $(`#create-droplets-size .${region}`).removeClass("d-none").prop("disabled", false);
     $("#create-droplets-size").val("").trigger("chosen:updated");
-    $("#create-droplets-image .image").addClass("d-hide").prop("disabled", true);
-    $(`#create-droplets-image .${region}`).removeClass("d-hide").prop("disabled", false);
+    $("#create-droplets-image .image").addClass("d-none").prop("disabled", true);
+    $(`#create-droplets-image .${region}`).removeClass("d-none").prop("disabled", false);
     $("#create-droplets-image").val("").trigger("chosen:updated");
   });
 }
 
 function registerFormSubmitListener() {
   $("#create-droplets-form fieldset").prop("disabled", false);
-  $("select.form-select").chosen({
+  $("select.chosen-select").chosen({
     disable_search_threshold: 10,
     search_contains: true,
     width: "100%",
@@ -103,14 +103,12 @@ function registerFormSubmitListener() {
     event.preventDefault();
 
     const self = $(this);
-    self.find(".form-input-hint").addClass("d-hide");
-    self.find(".form-group").removeClass("has-error");
+    self.find(".is-invalid").removeClass("is-invalid");
 
     const form = parseCreateForm();
     if (form.errors.length > 0) {
       for (const element of form.errors) {
-        $(element).closest(".form-group").addClass("has-error");
-        $(element).siblings(".form-input-hint").removeClass("d-hide");
+        $(element).addClass("is-invalid");
       }
       return false;
     }

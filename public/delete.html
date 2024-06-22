@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Delete Droplets</title>
-  <link rel="stylesheet" href="/vendor/spectre-do.min.css">
+  <link rel="stylesheet" href="/vendor/bootstrap.min.css">
   <link rel="stylesheet" href="/nav.css">
   <script src="/vendor/jquery.min.js"></script>
   <script src="/delete.js" defer></script>
@@ -18,20 +18,18 @@
     <li><a href="/delete.html" class="active">Delete</a></li>
   </ul>
 </nav>
-<div class="container grid-sm">
-  <h1 class="text-center">Delete Droplets</h1>
-  <form id="delete-form">
+<div class="container">
+  <h1 class="my-3">Delete Droplets</h1>
+  <form id="delete-form" class="form-inline mb-3">
     <fieldset>
-      <div class="input-group">
-        <label for="delete-tag" class="input-group-addon">Droplet Tag Name</label>
-        <input id="delete-tag" type="text" class="form-input"
-               placeholder="(Required)" maxlength="50"
+        <label for="delete-tag" class="sr-only">Droplet Tag Name</label>
+        <input id="delete-tag" type="text" class="form-control mr-3"
+               placeholder="Droplet Tag Name (Required)" maxlength="50"
                required autofocus>
-        <button class="btn btn-primary input-group-btn">Delete Droplets</button>
-      </div>
+        <button class="btn btn-primary">Delete Droplets</button>
     </fieldset>
   </form>
-  <div id="delete-result" class="toast d-hide"></div>
+  <div id="delete-result" class="alert d-none"></div>
 </div>
 </body>
 </html>

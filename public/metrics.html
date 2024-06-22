@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Droplet Metrics</title>
-  <link rel="stylesheet" href="/vendor/spectre-do.min.css">
+  <link rel="stylesheet" href="/vendor/bootstrap.min.css">
   <link rel="stylesheet" href="/metrics.css">
   <link rel="stylesheet" href="/nav.css">
   <script src="/vendor/highcharts.min.js"></script>
@@ -20,24 +20,22 @@
     <li><a href="/delete.html">Delete</a></li>
   </ul>
 </nav>
-<div id="setup" class="container grid-sm hidden">
-  <h1 class="text-center">Droplet Metrics</h1>
-  <form method="get">
-    <div class="input-group">
-      <label for="setup-tag">Droplet Tag Name</label>
-      <input id="setup-tag" name="tag" type="text" class="form-input"
-             placeholder="Droplet Tag Name (Required)" maxlength="50" required>
-      <label for="setup-refresh">Refresh Interval</label>
-      <select id="setup-refresh" name="refresh" class="form-select">
-        <option value="0">Don't refresh graphs</option>
-        <option value="1">Refresh every 1 minute</option>
-        <option value="2">Refresh every 2 minutes</option>
-        <option value="3">Refresh every 3 minutes</option>
-        <option value="4">Refresh every 4 minutes</option>
-        <option value="5">Refresh every 5 minutes</option>
-      </select>
-      <button class="btn btn-primary input-group-btn">Show Graphs</button>
-    </div>
+<div id="setup" class="container hidden">
+  <h1 class="my-3">Droplet Metrics</h1>
+  <form class="form-inline" method="get">
+    <label class="sr-only" for="setup-tag">Droplet Tag Name</label>
+    <input id="setup-tag" name="tag" type="text" class="form-control mr-3"
+           placeholder="Droplet Tag Name (Required)" maxlength="50" required>
+    <label class="sr-only" for="setup-refresh">Refresh Interval</label>
+    <select id="setup-refresh" name="refresh" class="custom-select mr-3">
+      <option value="0">Don't refresh graphs</option>
+      <option value="1">Refresh every 1 minute</option>
+      <option value="2">Refresh every 2 minutes</option>
+      <option value="3">Refresh every 3 minutes</option>
+      <option value="4">Refresh every 4 minutes</option>
+      <option value="5">Refresh every 5 minutes</option>
+    </select>
+    <button class="btn btn-primary">Show Graphs</button>
   </form>
 </div>
 <div id="container" class="hidden">
