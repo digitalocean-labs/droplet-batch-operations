@@ -10,18 +10,21 @@ $("#delete-form").on("submit", function (e) {
   const url = `/v2/droplets?${query}`;
   const opts = { method: "DELETE" };
 
-  $(this).find("fieldset").prop("disabled", true);
-  const resultDiv = $("#delete-result");
+  const fieldset = $(this).find("fieldset");
+  fieldset.prop("disabled", true);
 
+  const resultDiv = $("#delete-result");
   fetch(url, opts)
     .then((res) => {
       if (res.ok) {
         resultDiv.text("Delete request successful.").addClass("alert-success").removeClass("d-none");
+        fieldset.prop("disabled", false);
       } else {
         throw new Error(`${res.status} ${res.statusText} at ${res.url}`);
       }
     })
     .catch((error) => {
       resultDiv.text(error.toString()).addClass("alert-danger").removeClass("d-none");
+      fieldset.prop("disabled", false);
     });
 });
