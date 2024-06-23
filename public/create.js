@@ -102,8 +102,7 @@ function registerFormSubmitListener() {
   $("#create-droplets-form").on("submit", function (event) {
     event.preventDefault();
 
-    const self = $(this);
-    self.find(".is-invalid").removeClass("is-invalid");
+    $(this).find(".is-invalid").removeClass("is-invalid");
 
     const form = parseCreateForm();
     if (form.errors.length > 0) {
@@ -113,11 +112,9 @@ function registerFormSubmitListener() {
       return false;
     }
 
-    self.find("fieldset").prop("disabled", true);
-    $("#create-droplets-btn").closest(".form-group").hide();
-
     const requests = createRequests(form);
     renderCreatedDroplets(form, requests);
+    $("#create-droplets").hide();
     createDroplets(requests);
   });
 }
